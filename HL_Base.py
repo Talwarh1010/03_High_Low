@@ -55,13 +55,12 @@ def min_max_rounds_check(question):
 statement_generator("Welcome to High Low game", "*")
 
 yes_no("Have you played the game before? Yes / No  ")
-
-play_again = ""
-while play_again == "":
-    rounds_played = 1
+while True:
+    rounds_played = 0
     guesses = 0
     used_list = []
     minimum = min_max_rounds_check("Pick a minimum value: ")
+    print()
     maximum = min_max_rounds_check("Pick a maximum value: ")
     if int(maximum) < int(minimum):
         print("Please enter a minimum value bigger than the maximum value")
@@ -74,15 +73,12 @@ while play_again == "":
     print(f"Max guesses: {max_guesses}")
     print()
     rounds_play = min_max_rounds_check("How many rounds would you like to play: ")
-    if rounds_play == "":
-        print(f"Continuous mode: # {str(rounds_played)}")
-        
-    else:
-        print(f"Round: #{str(rounds_played)} out of #{str(rounds_play)}")
     break
-    
+rounds_played = 1
+statement_generator("The first round has begun", character = "")
 while guesses != max_guesses:
-        
+    if rounds_played > rounds_play:
+        break
     chosen = num_check(f"Guess the secret number:", low = minimum, high = maximum)
         
     if chosen in used_list:
@@ -91,11 +87,20 @@ while guesses != max_guesses:
         
     used_list.append(chosen)
     guesses += 1
-    rounds_played += 1
+    
+    
     if guesses == max_guesses:
+        rounds_played += 1
         print("Sorry, you ran out of guesses")
+        print()
         print(f"The number was {secret}")
-        break
+        print()
+        statement_generator(f"round: {rounds_played} has begun", character = "!")
+        print()
+        secret = random.randint(int(minimum), int(maximum))
+        used_list = []
+        guesses = 0
+        continue
     elif chosen > secret:
         print("Too high")
     
@@ -103,12 +108,20 @@ while guesses != max_guesses:
         print("Too low")
     
     elif chosen == secret: 
+        rounds_played += 1
         statement_generator("Congratulations, you guessed the number", "^")
-        break
+        print()
+        if rounds_play < rounds_played:
+            statement_generator(f"round: {rounds_played} has begun", character = "!") 
+            secret = random.randint(int(minimum), int(maximum))
+            used_list = []
+            guesses = 0
+            continue
+        else:
+            break
+
     
-show_stats = input("Press <enter> to see the statistics of the rounds")
-if show_stats == "":
-    print()
+
 play_again = input("Thank you for playing, would you like to play again? <enter> to play again?")
 
 
