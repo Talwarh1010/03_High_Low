@@ -51,11 +51,13 @@ def min_max_rounds_check(question):
             return int(response)
         else:
             print("Please input an integer more than 0")
+            
 # Main routine
+play_again = ""
 statement_generator("Welcome to High Low game", "*")
 
 yes_no("Have you played the game before? Yes / No  ")
-while True:
+while True or play_again == "":
     rounds_played = 0
     guesses = 0
     used_list = []
@@ -65,6 +67,7 @@ while True:
     if int(maximum) < int(minimum):
         print("Please enter a minimum value bigger than the maximum value")
         continue
+    
     secret = random.randint(int(minimum), int(maximum))
     range = int(maximum) - int(minimum) + 1
     max_raw = math.log2(range)
@@ -74,54 +77,44 @@ while True:
     print()
     rounds_play = min_max_rounds_check("How many rounds would you like to play: ")
     break
-rounds_played = 1
-statement_generator("The first round has begun", character = "")
-while guesses != max_guesses:
-    if rounds_played > rounds_play:
-        break
-    chosen = num_check(f"Guess the secret number:", low = minimum, high = maximum)
+rounds_played = 0
+
+while rounds_played < rounds_play:
+    rounds_played += 1
+    statement_generator(f"The #{rounds_played} round has begun", character = "")
+    
+    while guesses < max_guesses:
+        chosen = num_check(f"Guess the secret number:", low = minimum, high = maximum)
+            
+        if chosen in used_list:
+                print("You have already used this letter")
+                continue
+            
+        used_list.append(chosen)
+        guesses += 1
         
-    if chosen in used_list:
-            print("You have already used this letter")
-            continue
-        
-    used_list.append(chosen)
-    guesses += 1
-    
-    
-    if guesses == max_guesses:
-        rounds_played += 1
-        print("Sorry, you ran out of guesses")
-        print()
-        print(f"The number was {secret}")
-        print()
-        statement_generator(f"round: {rounds_played} has begun", character = "!")
-        print()
-        secret = random.randint(int(minimum), int(maximum))
-        used_list = []
-        guesses = 0
-        continue
-    elif chosen > secret:
-        print("Too high")
-    
-    elif chosen < secret:
-        print("Too low")
-    
-    elif chosen == secret: 
-        rounds_played += 1
-        statement_generator("Congratulations, you guessed the number", "^")
-        print()
-        if rounds_play < rounds_played:
-            statement_generator(f"round: {rounds_played} has begun", character = "!") 
+        if guesses == max_guesses:
+            print()
+            print("Sorry, you ran out of guesses")
+            print(f"The number was {secret}")
             secret = random.randint(int(minimum), int(maximum))
             used_list = []
             guesses = 0
-            continue
-        else:
             break
-
-    
-
+        
+        elif chosen > secret:
+            print("Too high")
+        
+        elif chosen < secret:
+            print("Too low")
+        
+        elif chosen == secret: 
+            print()
+            statement_generator("Congratulations, you guessed the number", "^")
+            secret = random.randint(int(minimum), int(maximum))
+            used_list = []
+            guesses = 0
+            break
 play_again = input("Thank you for playing, would you like to play again? <enter> to play again?")
 
 
